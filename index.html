@@ -5,146 +5,262 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rollercoaster Player</title>
+<title>Video Select</title>
 
 <style>
 
 html,body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    background:#000;
-    overflow:hidden;
-    font-family:Arial;
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+background:#101010;
+overflow:hidden;
+font-family:Arial;
 }
 
-/* Zwarte rand container */
-#frame{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:95vw;
-    height:95vh;
-    background:#000;
-    border:18px solid #000;      /* Zwarte rand */
-    border-radius:22px;          /* Mooie afgeronde hoeken */
-    overflow:hidden;
+/* TV */
+#tv{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:96vw;
+height:94vh;
+padding:12px;
+box-sizing:border-box;
+border-radius:18px;
+background:linear-gradient(
+135deg,
+#444,#d8d8d8,#777,#222,#999,#555);
 }
 
-/* Startscherm */
-#startScreen{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+/* Menu */
+#menu{
+display:flex;
+justify-content:space-evenly;
+align-items:center;
+width:100%;
+height:100%;
+background:#000;
+border-radius:10px;
 }
 
-/* Thumbnail */
-#thumbnail{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    opacity:0.85;
+.card{
+width:30%;
+cursor:pointer;
+transition:.25s;
 }
 
-/* Rode aan-knop */
-#powerButton{
-    position:relative;
-    width:140px;
-    height:140px;
-    background:red;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    box-shadow:0 0 35px rgba(255,0,0,0.8);
-    z-index:10;
+.card:hover{
+transform:scale(1.03);
 }
 
-#powerButton img{
-    width:60%;
+.card img{
+width:100%;
+border-radius:10px;
+display:block;
+}
+
+.title{
+color:white;
+font-size:22px;
+padding-top:10px;
+text-align:center;
 }
 
 /* Player */
-#playerContainer{
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:none;
-}
-
 #player{
-    width:100%;
-    height:100%;
-    border:none;
+display:none;
+position:relative;
+width:100%;
+height:100%;
+background:#000;
+border-radius:10px;
 }
 
-/* Back-knop */
+#ytplayer{
+position:absolute;
+inset:0;
+width:100%;
+height:calc(100% - 40px);
+}
+
+/* Seekbar */
+#seek{
+position:absolute;
+left:0;
+bottom:0;
+width:100%;
+height:40px;
+cursor:pointer;
+}
+
+/* Back button */
 #back{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    z-index:999;
-    padding:10px 20px;
-    background:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-    display:none;
+position:absolute;
+top:18px;
+left:18px;
+z-index:999;
+display:none;
+padding:10px 20px;
+background:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+/* CC button */
+#ccbtn{
+position:absolute;
+top:18px;
+left:110px;
+z-index:999;
+display:none;
+padding:10px 14px;
+background:white;
+border:none;
+border-radius:8px;
+font-size:14px;
+cursor:pointer;
+}
+
+#ccbtn.active{
+background:lightgreen;
 }
 
 </style>
 
 </head>
+
 <body>
 
-<div id="frame">
+<div id="tv">
 
-    <!-- Startscherm -->
-    <div id="startScreen">
+<button id="back" onclick="showMenu()">← Back</button>
+<button id="ccbtn" onclick="toggleCC()">CC</button>
 
-        <!-- Thumbnail -->
-        <img id="thumbnail" src="https://img.youtube.com/ckdisVfoUQ4/maxresdefault.jpg">
+<div id="menu">
 
-        <!-- Rode knop -->
-        <div id="powerButton" onclick="startVideo()">
-            <img src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgdmlld0JveD0iMCAwIDI0IDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMiAyLjV2MTVNMTEgMjEuNWMtNS40IDAtOS43LTQuMy05LjctOS43IDAtNS40IDQuMy05LjcgOS43LTkuNyA1LjQgMCA5LjcgNC4zIDkuNyA5LjcgMCA1LjQtNC4zIDkuNy05LjcgOS43eiIvPjwvc3ZnPg==" />
-        </div>
+<div class="card" onclick="playVideo('ckdisVfoUQ4')">
+<img src="https://hosting.photobucket.com/bc02da2e-8afb-4b69-a4bf-9332cae392c5/d96776b3-9271-48ae-b73e-7f5780f2df6b.jpg">
+<div class="title">Wierdense Revue</div>
+</div>
 
-    </div>
+<div class="card" onclick="playVideo('cSQmNUtGljA')">
+<img src="https://img.youtube.com/vi/cSQmNUtGljA/maxresdefault.jpg">
+<div class="title">Drenthe Plat</div>
+</div>
 
-    <!-- Videospeler -->
-    <div id="playerContainer">
-        <iframe id="player" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <button id="back" onclick="goBack()">← Back</button>
-    </div>
+<div class="card" onclick="playVideo('8ANDVg9zj6E')">
+<img src="https://hosting.photobucket.com/bc02da2e-8afb-4b69-a4bf-9332cae392c5/d96776b3-9271-48ae-b73e-7f5780f2df6b.jpg">
+<div class="title">Wierdense Revue</div>
+</div>
 
 </div>
 
+<div id="player"></div>
+
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 
-function startVideo(){
-    document.getElementById("startScreen").style.display="none";
-    document.getElementById("playerContainer").style.display="block";
-    document.getElementById("back").style.display="block";
+let player;
+let timer;
+let ccOn = false;
 
-    document.getElementById("player").src =
-        "https://www.youtube.com/embed/ckdisVfoUQ4?autoplay=1&controls=0&rel=0&modestbranding=1";
+function playVideo(id){
+
+document.getElementById("menu").style.display="none";
+document.getElementById("back").style.display="block";
+document.getElementById("ccbtn").style.display="block";
+document.getElementById("player").style.display="block";
+
+document.getElementById("player").innerHTML=`
+<div id="ytplayer"></div>
+<input type="range" id="seek" value="0" min="0" max="100">
+`;
+
+player = new YT.Player('ytplayer',{
+videoId:id,
+playerVars:{
+autoplay:1,
+controls:1,
+rel:0,
+cc_load_policy:0
+},
+events:{
+onReady:onReady
+}
+});
+
 }
 
-function goBack(){
-    document.getElementById("player").src = "";
-    document.getElementById("playerContainer").style.display="none";
-    document.getElementById("back").style.display="none";
-    document.getElementById("startScreen").style.display="flex";
+function onReady(){
+
+const seek=document.getElementById("seek");
+
+timer=setInterval(()=>{
+
+if(player && player.getDuration){
+let d=player.getDuration();
+if(d>0){
+seek.value=(player.getCurrentTime()/d)*100;
+}
+}
+
+},300);
+
+seek.oninput=function(){
+player.seekTo(player.getDuration()*(this.value/100),true);
+};
+
+}
+
+function toggleCC(){
+
+if(!player) return;
+
+ccOn = !ccOn;
+
+const btn = document.getElementById("ccbtn");
+
+if(ccOn){
+
+// probeer Nederlands / captions aan
+player.loadModule("captions");
+
+player.setOption("captions","track",{languageCode:"nl"});
+
+btn.classList.add("active");
+
+}else{
+
+player.setOption("captions","track",null);
+
+btn.classList.remove("active");
+
+}
+
+}
+
+function showMenu(){
+
+clearInterval(timer);
+
+if(player){
+player.destroy();
+}
+
+document.getElementById("player").innerHTML="";
+document.getElementById("player").style.display="none";
+document.getElementById("back").style.display="none";
+document.getElementById("ccbtn").style.display="none";
+document.getElementById("menu").style.display="flex";
+
 }
 
 </script>
